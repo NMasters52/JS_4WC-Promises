@@ -11,28 +11,26 @@ function displayText(value) {
 function throwDisc() {
    return new Promise((resolve, reject) => {
 
-        throwDisc = true;
+    setTimeout(() => {
 
-        if (throwDisc) {
-            setTimeout(() => {
-               resolve("You threw the disc");
-            }, 1000)
+        let throwSuccess = true 
+
+        if (throwSuccess) {
+                resolve({message: "You threw the disc", success: true});
         } else {
             reject("You didn't throw the disc");
         };
+    }, 2000)
         
     });
 };
 
-function walkToDisc(value) {
+function walkToDisc(data) {
     return new Promise((resolve, reject) => {
 
         setTimeout(() => {
-
-            discThrown = true;
-
-            if (discThrown) {
-                resolve("You've arrived at your disc");
+            if (data.success) {
+                resolve({message: "You walked to the disc", success: true});
             } else {
                 reject('You have not thrown yet');
             }
@@ -41,21 +39,21 @@ function walkToDisc(value) {
     });
 };
 
-function putDiscInBasket() {
+function putDiscInBasket(data) {
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            discIsIn = true;
 
-            if (discIsIn) {
-                resolve('disc is in the basket, onto the next hole')
+        setTimeout(() => {
+            if (data.success) {
+                resolve({message: "Onto the next hole", success: true});
             } else {
                 reject('you missed try again')
             }
         }, 1000);
+
     });
 }
 
-    throwDisc().then(value => {displayText(value); return walkToDisc()})
-            .then(value => {displayText(value); return putDiscInBasket()})
-            .then(value => displayText(value))
+    throwDisc().then(data => {displayText(data.message); return walkToDisc(data)})
+            .then(data => {displayText(data.message); return putDiscInBasket(data)})
+            .then(data => displayText(data.message))
             .catch(error => displayText(error));
