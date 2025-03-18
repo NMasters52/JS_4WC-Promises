@@ -1,41 +1,61 @@
 const display = document.getElementById('displayElement');
 
-//simulate a data fetch from an Api or other source
-function fetchData() {
-    return new Promise ((resolve, reject) => {
-        //simulate network latency
-        setTimeout(() => {
-            //80% success rate simulated
-            const randomSuccessRate = Math.random() < 0.8;
+// 1. Throw the Disc 
+// 2. Walk to the Disc
+// 3. Put the disc in the basket 
 
-            if (randomSuccessRate) {
-                //simulate data
-                const data = {
-                    userId: 1, 
-                    id: 1, 
-                    title: 'Simulated Data', 
-                    completed: false,   
-                };
-                //resolve handle
-                resolve(data);
-            } else {
-                //reject handle
-                reject(new Error('Data fetch was unsuccessful'));
-            }
-        }, 4000)
-    })
+function displayText(value) {
+    display.innerText = value;
+}
+
+function throwDisc() {
+   return new Promise((resolve, reject) => {
+
+        throwDisc = true;
+
+        if (throwDisc) {
+            setTimeout(() => {
+               resolve("You threw the disc");
+            }, 1000)
+        } else {
+            reject("You didn't throw the disc");
+        };
+        
+    });
 };
 
-fetchData()
-    .then((data) => {
-        const values = Object.values(data);
-        let displayText = '';  
+function walkToDisc(value) {
+    return new Promise((resolve, reject) => {
 
-        values.forEach((value) => {
-            displayText += `${value} `;
-        })
-        display.innerText = displayText.trim();
-    })
-    .catch((error) => {
-        display.innerText = `fetch was unsuccessful ${error.message}`
+        setTimeout(() => {
+
+            discThrown = true;
+
+            if (discThrown) {
+                resolve("You've arrived at your disc");
+            } else {
+                reject('You have not thrown yet');
+            }
+        }, 5000);
+
     });
+};
+
+function putDiscInBasket() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            discIsIn = true;
+
+            if (discIsIn) {
+                resolve('disc is in the basket, onto the next hole')
+            } else {
+                reject('you missed try again')
+            }
+        }, 1000);
+    });
+}
+
+    throwDisc().then(value => {displayText(value); return walkToDisc()})
+            .then(value => {displayText(value); return putDiscInBasket()})
+            .then(value => displayText(value))
+            .catch(error => displayText(error));
